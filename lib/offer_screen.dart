@@ -17,9 +17,8 @@ class OfferScreen extends StatefulWidget {
 class _OfferScreenState extends State<OfferScreen> {
   fetchPosts(UserBloc userBloc) async {
     var url = ApiConstants.API_URL + '/api/v1/posts';
-    String authorizationString = 'Basic ' +
-        base64Encode(
-            userBloc.user.username + ':' + userBloc.user.password.codeUnits);
+    String userHash = userBloc.user.username + ':' + userBloc.user.password;
+    String authorizationString = 'Basic ' + base64Encode(utf8.encode(userHash));
     print(authorizationString);
     var response = await http.post(
       Uri.parse(url),
