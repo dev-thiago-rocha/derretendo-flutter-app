@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:quitanda_do_seu_joao/dashboard_screen.dart';
 import 'package:quitanda_do_seu_joao/register_screen.dart';
 import 'blocs/user_bloc.dart';
+import 'create_post.dart';
 import 'initial_screen.dart';
 import 'login_screen.dart';
 
@@ -13,8 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserBloc>.value(
-          value: UserBloc(),
+        ChangeNotifierProvider(
+          create: (_) => UserBloc(),
         ),
       ],
       child: MaterialApp(
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/register': (context) => RegisterScreen(),
           '/dashboard': (context) => DashboardScreen(),
+          '/create-post': (context) => CreatePostScreen(),
         },
         initialRoute: '/',
       ),

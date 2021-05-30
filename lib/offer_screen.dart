@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quitanda_do_seu_joao/blocs/user_bloc.dart';
+import 'package:quitanda_do_seu_joao/models/post_model.dart';
+import 'package:quitanda_do_seu_joao/post_container.dart';
 import 'constants/api_constants.dart' as ApiConstants;
 import 'package:http/http.dart' as http;
 
@@ -15,11 +18,13 @@ class OfferScreen extends StatefulWidget {
 }
 
 class _OfferScreenState extends State<OfferScreen> {
+  List<PostModel> posts = [];
+
   fetchPosts(UserBloc userBloc) async {
     var url = ApiConstants.API_URL + '/api/v1/post';
     String userHash = userBloc.user.username + ':' + userBloc.user.password;
     String authorizationString = 'Basic ' + base64Encode(utf8.encode(userHash));
-    print(authorizationString);
+
     var response = await http.get(
       Uri.parse(url),
       headers: <String, String>{
@@ -27,74 +32,44 @@ class _OfferScreenState extends State<OfferScreen> {
         'Content-Type': 'application/json',
       },
     );
-    print(response.body);
+    var decode = jsonDecode(response.body);
+
+    List<PostModel> postsResponse =
+        (decode as List).map((data) => new PostModel.fromJson(data)).toList();
+
+    setState(() {
+      posts = postsResponse;
+    });
+  }
+
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      var userBloc = Provider.of<UserBloc>(context, listen: false);
+      fetchPosts(userBloc);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final userBloc = Provider.of<UserBloc>(context, listen: false);
-    fetchPosts(userBloc);
-    final postContainer = Container(
-      height: 200,
-      margin: EdgeInsets.fromLTRB(12, 12, 12, 12),
-      decoration: BoxDecoration(
-        color: Colors.red,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text('titulo',
-                style: style.copyWith(color: Colors.white, fontSize: 20)),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Criador',
-                    style: style.copyWith(
-                      color: Colors.white,
-                    )),
-                Text('Descrição',
-                    style: style.copyWith(
-                      color: Colors.white,
-                    )),
-                Text('Link',
-                    style: style.copyWith(
-                      color: Colors.white,
-                    )),
-                Text('Data',
-                    style: style.copyWith(
-                      color: Colors.white,
-                    )),
-                Text('Preço',
-                    style: style.copyWith(
-                      color: Colors.white,
-                    )),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-
     return Material(
-      child: ListView(
-        children: [
-          postContainer,
-          postContainer,
-          postContainer,
-          postContainer,
-          postContainer,
-          postContainer
-        ],
-      ),
+      child: ListView(children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 1, top: 10),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/create-post');
+            },
+            child: Center(
+                child: Text(
+              'Criar post',
+              style: style,
+            )),
+          ),
+        ),
+        for (PostModel post in posts)
+          if (post.title != null) PostContainer(post),
+      ]),
     );
   }
 }
