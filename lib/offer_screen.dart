@@ -18,9 +18,8 @@ class _OfferScreenState extends State<OfferScreen> {
   fetchPosts(UserBloc userBloc) async {
     var url = ApiConstants.API_URL + '/api/v1/posts';
     String authorizationString = 'Basic ' +
-        userBloc.user.username +
-        ':' +
-        base64Encode(userBloc.user.password.codeUnits);
+        base64Encode(
+            userBloc.user.username + ':' + userBloc.user.password.codeUnits);
     print(authorizationString);
     var response = await http.post(
       Uri.parse(url),
