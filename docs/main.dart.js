@@ -62058,7 +62058,7 @@ n="Basic "+C.iT.gik().cu(o)
 P.nm(n)
 o=t.N
 s=2
-return P.ab(G.ak7(P.mS("https://derretendo-api.herokuapp.com/api/v1/posts"),null,P.as(["Authorization",n,"Content-Type","application/json"],o,o)),$async$tP)
+return P.ab(G.ak7(P.mS("https://derretendo-api.herokuapp.com/api/v1/post"),null,P.as(["Authorization",n,"Content-Type","application/json"],o,o)),$async$tP)
 case 2:q=c
 P.nm(B.awJ(U.auA(q.e).c.a.h(0,"charset")).dj(0,q.x))
 return P.a6(null,r)}})
