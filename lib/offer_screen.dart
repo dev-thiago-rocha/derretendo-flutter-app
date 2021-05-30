@@ -20,7 +20,7 @@ class _OfferScreenState extends State<OfferScreen> {
     String userHash = userBloc.user.username + ':' + userBloc.user.password;
     String authorizationString = 'Basic ' + base64Encode(utf8.encode(userHash));
     print(authorizationString);
-    var response = await http.post(
+    var response = await http.get(
       Uri.parse(url),
       headers: <String, String>{
         'Authorization': authorizationString,
